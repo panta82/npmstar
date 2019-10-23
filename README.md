@@ -2,6 +2,10 @@
 
 Very simple node.js utility to install freshest versions of all the dependencies in your `package.json` marked as "*" without mutating `package.js`.
 
+```
+npm i -g npmstar
+```
+
 Basically, for:
 
 ```

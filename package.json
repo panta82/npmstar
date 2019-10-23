@@ -10,5 +10,6 @@
   "license": "ISC",
   "devDependencies": {
     "prettier": "^1.18.2"
-  }
+  },
+  "bin": { "npmstar": "./bin/npmstar" }
 }
