@@ -1,0 +1,14 @@
+{
+  "name": "npmstar",
+  "version": "1.0.0",
+  "description": "Very simple node.js utility to install freshest versions of all the dependencies in your `package.json` marked as \"*\" without mutating `package.js`.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^1.18.2"
+  }
+}

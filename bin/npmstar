@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+const libPath = require('path');
+const execSync = require('child_process').execSync;
+
+/**
+ * Find the first appearance of package.json relative to the executing application.
+ * NOTE: This is the application that was launched, not this file.
+ * NOTE: This is a synchronous method and shouldn't be called after initialization
+ */
+function loadPackageJSONFromDirSync(dir = undefined) {
+  if (!dir) {
+    dir = process.cwd();
+  }
+  
+  try {
+    const pkg = require(libPath.resolve(dir, './package.json'));
+    return pkg;
+  } catch (err) {
+    if (err.code === 'MODULE_NOT_FOUND') {
+      // Not found, recurse
+      if (dir === '/') {
+        // There is nowhere to go from here
+        throw new TypeError(`package.json not found`);
+      }
+      return loadPackageJSONFromDirSync(libPath.resolve(dir, '../'));
+    }
+    
+    // Some other unexpected error
+    throw err;
+  }
+}
+
+/**
+ * Exctract list of module names to install from package json
+ */
+function getModuleNames(packageJson) {
+  const names = [];
+  
+  for (const key of ['dependencies', 'devDependencies']) {
+    const deps = packageJson[key];
+    if (deps) {
+      for (const name in deps) {
+        if (deps.hasOwnProperty(name) && deps[name] === '*') {
+          names.push(name);
+        }
+      }
+    }
+  }
+  return names;
+}
+
+function main() {
+  const packageJson = loadPackageJSONFromDirSync();
+  
+  const names = getModuleNames(packageJson);
+
+  if (names.length) {
+    execSync(`npm install --latest --no-save ${names.join(' ')}`, {
+      stdio: 'inherit'
+    });
+  }
+}
+
+Promise.resolve().then(() => main()).catch(err => {
+  console.error(err);
+  process.exit(1);
+});
