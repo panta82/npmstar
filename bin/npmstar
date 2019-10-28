@@ -12,7 +12,7 @@ function loadPackageJSONFromDirSync(dir = undefined) {
   if (!dir) {
     dir = process.cwd();
   }
-  
+
   try {
     const pkg = require(libPath.resolve(dir, './package.json'));
     return pkg;
@@ -25,7 +25,7 @@ function loadPackageJSONFromDirSync(dir = undefined) {
       }
       return loadPackageJSONFromDirSync(libPath.resolve(dir, '../'));
     }
-    
+
     // Some other unexpected error
     throw err;
   }
@@ -36,7 +36,7 @@ function loadPackageJSONFromDirSync(dir = undefined) {
  */
 function getModuleNames(packageJson) {
   const names = [];
-  
+
   for (const key of ['dependencies', 'devDependencies']) {
     const deps = packageJson[key];
     if (deps) {
@@ -52,17 +52,19 @@ function getModuleNames(packageJson) {
 
 function main() {
   const packageJson = loadPackageJSONFromDirSync();
-  
+
   const names = getModuleNames(packageJson);
 
   if (names.length) {
-    execSync(`npm install --latest --no-save ${names.join(' ')}`, {
-      stdio: 'inherit'
+    execSync(`npm install --latest --no-save --package-lock-only ${names.join(' ')}`, {
+      stdio: 'inherit',
     });
   }
 }
 
-Promise.resolve().then(() => main()).catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+Promise.resolve()
+  .then(() => main())
+  .catch(err => {
+    console.error(err);
+    process.exit(1);
+  });

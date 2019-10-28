@@ -29,7 +29,7 @@ in a project with `package.json` like this:
 it will run:
 
 ```
-npm install --latest --no-save a c
+npm install --latest --no-save --package-lock-only a c
 ```
 
 That's it, super simple.
