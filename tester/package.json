@@ -1,10 +1,10 @@
 {
-	"dependencies": {
-		"gotjs": "*",
-		"ecdsa-csr": "latest",
-		"https-timer": "*"
-	},
-	"devDependencies": {
-		"eckles": "*"
-	}
+  "dependencies": {
+    "gotjs": "*",
+    "ecdsa-csr": "1.1.1",
+    "https-timer": "latest"
+  },
+  "devDependencies": {
+    "eckles": "*"
+  }
 }

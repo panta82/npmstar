@@ -41,7 +41,7 @@ function getModuleNames(packageJson) {
     const deps = packageJson[key];
     if (deps) {
       for (const name in deps) {
-        if (deps.hasOwnProperty(name) && deps[name] === '*') {
+        if (deps.hasOwnProperty(name) && (deps[name] === '*' || deps[name] === 'latest')) {
           names.push(name);
         }
       }
@@ -51,12 +51,30 @@ function getModuleNames(packageJson) {
 }
 
 function main() {
+  if (process.argv[2] === '-h' || process.argv[2] === '--help') {
+    const packageJson = require('../package');
+    console.log(`
+npmstar v${packageJson.version}
+
+Very simple node.js utility to install the freshest versions of all the dependencies
+in your 'package.json' marked as "*" or "latest", without mutating 'package.js'.
+If exists, package.lock will be updated to reflect the latest versions installed.
+
+There are no options.
+`);
+    process.exit(0);
+  }
+
   const packageJson = loadPackageJSONFromDirSync();
 
   const names = getModuleNames(packageJson);
 
   if (names.length) {
-    execSync(`npm install --latest --no-save --package-lock-only ${names.join(' ')}`, {
+    const cmd = `npm install --latest --no-save --no-audit ${names.join(
+      ' '
+    )} && npm install --latest --no-save --no-audit --package-lock-only ${names.join(' ')}`;
+    console.log(cmd);
+    execSync(cmd, {
       stdio: 'inherit',
     });
   }
